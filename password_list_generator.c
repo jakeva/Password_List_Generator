@@ -30,7 +30,7 @@ int main (int argc, char *argv[]){
     FILE *out;
     int *list;
     int list_size;
-    
+
     // if invalid input or argument count display options
     if(argc != 5){
         printf("Usage: %s <min length> <max length> <type> <output>\n", argv[0]);
@@ -44,13 +44,13 @@ int main (int argc, char *argv[]){
         printf(" 7 - alpha numeric (upper/lower) + special chars\n");
         exit(0);
     }
-    
+
     //parse input
     min = atoi(argv[1]);
     max = atoi(argv[2]);
     type = atoi(argv[3]);
     j = 0;
-    
+
     // create list of chosen chars for passwords
     switch(type){
         case 1:
@@ -114,19 +114,22 @@ int main (int argc, char *argv[]){
             printf("Incorrect type set\n");
             exit(1);
     }
-    
+
     //open file for writing exit if error
     out = fopen(argv[4], "wt");
     if(out == NULL){
         printf("Error opening file for writing\n");
         exit(1);
     }
-    
-    //alloc temp string
-    temp = malloc(sizeof(char) * max);
+
     //start main loop for generator
     for(i=min; i<max+1; i++)
+    {
+        //alloc temp string
+        temp = malloc(sizeof(char) * i);
+        temp[i] = '\0';
         generator(list, list_size, temp, 0, i, out);
+    }
 
     //close program
     free(temp);
@@ -137,9 +140,9 @@ int main (int argc, char *argv[]){
 
 /**
  *  generator
- *  generates every combination of passwords given a list of chars and range 
+ *  generates every combination of passwords given a list of chars and range
  *  of password lengths.
- *  
+ *
  *  output:  writes each password to a file 'out'
  */
 void generator(int *list, int list_size, char *temp, int index, int n, FILE *out){
@@ -153,8 +156,3 @@ void generator(int *list, int list_size, char *temp, int index, int n, FILE *out
         }
     }
 }
-
-
-
-
-
