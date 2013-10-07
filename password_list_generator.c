@@ -32,8 +32,9 @@ int main (int argc, char *argv[]){
     int list_size;
 
     // if invalid input or argument count display options
-    if(argc != 5){
-        printf("Usage: %s <min length> <max length> <type> <output>\n", argv[0]);
+    if(argc != 4 && argc != 5){
+        printf("Usage: %s <min length> <max length> <type> [<output>]\n", argv[0]);
+        printf("<output> is optional, leave it out to print to console");
         printf("Types:\n");
         printf(" 1 - numeric (0-9)\n");
         printf(" 2 - alpha (uppercase only)\n");
@@ -116,12 +117,19 @@ int main (int argc, char *argv[]){
     }
 
     //open file for writing exit if error
-    out = fopen(argv[4], "wt");
-    if(out == NULL){
-        printf("Error opening file for writing\n");
-        exit(1);
+    if (argc == 5)
+    {
+        out = fopen(argv[4], "wt");
+        if(out == NULL){
+            printf("Error opening file for writing\n");
+            exit(1);
+        }    
     }
-
+    else // if argc isn't 5, it's 4. 
+    {
+        out = 0;
+    }
+    
     //start main loop for generator
     for(i=min; i<max+1; i++)
     {
@@ -134,7 +142,10 @@ int main (int argc, char *argv[]){
     //close program
     free(temp);
     free(list);
-    fclose(out);
+    
+    if (argc == 5)
+        fclose(out);
+
     return 0;
 }
 
@@ -143,11 +154,14 @@ int main (int argc, char *argv[]){
  *  generates every combination of passwords given a list of chars and range
  *  of password lengths.
  *
- *  output:  writes each password to a file 'out'
+ *  output:  writes each password to a file 'out', or prints to stdout
  */
 void generator(int *list, int list_size, char *temp, int index, int n, FILE *out){
     if(index == n){
-        fprintf(out, "%s\n", temp);
+        if (out)
+            fprintf(out, "%s\n", temp);
+        else
+            printf("%s\n", temp);
     }else{
         int i;
         for(i=0; i<list_size; i++){
